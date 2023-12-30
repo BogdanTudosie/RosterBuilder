@@ -26,6 +26,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -161,6 +162,7 @@ fun PageScaffold(gameUnit: GameUnit?, modifier: Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UnitTextField(value: String,
                   label: String,
@@ -174,20 +176,22 @@ fun UnitTextField(value: String,
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier) {
-        TextField(
-            value = textValue,
-            onValueChange = { textValue = it },
-            label = { Text(label) },
-            maxLines = 1,
-            keyboardOptions = keyboardOptions
-        )
-        IconButton(onClick = {
-            makeInfoToast(context, contentDescription)
-        }) {
-            Icon(imageVector = icon,
-                contentDescription = contentDescription,
-                modifier = modifier
+
+            TextField(
+                value = textValue,
+                onValueChange = { textValue = it },
+                label = { Text(label) },
+                maxLines = 1,
+                keyboardOptions = keyboardOptions
             )
+            PlainTooltipBox(tooltip = { Text(contentDescription) }) {
+                IconButton(onClick = {},
+                        modifier = Modifier.tooltipAnchor()) {
+                            Icon(imageVector = icon,
+                            contentDescription = contentDescription,
+                            modifier = modifier
+                )
+            }
         }
     }
 }
