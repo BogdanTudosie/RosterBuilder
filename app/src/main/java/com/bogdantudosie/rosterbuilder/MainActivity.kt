@@ -1,11 +1,10 @@
 package com.bogdantudosie.rosterbuilder
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,10 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -115,19 +111,29 @@ fun PageScaffold(gameUnit: GameUnit?, modifier: Modifier) {
                 colors = topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
-                ))
+                ),
+                actions = {
+                    PlainTooltipBox(tooltip = { Text("Long tap a text field for more help") }) {
+                        IconButton(
+                            onClick = { /* Do something here */ },
+                            modifier = Modifier.tooltipAnchor()) {
+                            Icon(Icons.Filled.Info, contentDescription = "View info")
+                        }
+                    }
+
+                }
+            )
         },
     ) {
         innerPadding ->
         Column(modifier = Modifier
             .padding(innerPadding)
-            .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(vertical = 8.dp)
+            .fillMaxWidth()
         ) {
             UnitTextField(
                 value = unitName!!,
                 label = "Unit name",
-                icon = Icons.Filled.Info,
                 contentDescription = "Use this field to adjust unit name",
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
@@ -139,7 +145,6 @@ fun PageScaffold(gameUnit: GameUnit?, modifier: Modifier) {
             UnitTextField(
                 value = unitType!!,
                 label = "Unit type",
-                icon = Icons.Filled.Info,
                 contentDescription = "Use this field to adjust the unit type",
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
@@ -151,7 +156,6 @@ fun PageScaffold(gameUnit: GameUnit?, modifier: Modifier) {
             UnitTextField(
                 value = unitCost!!.toString(),
                 label = "Unit cost",
-                icon = Icons.Filled.Info,
                 contentDescription = "Use this field to adjust the unit cost in points",
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
@@ -166,38 +170,26 @@ fun PageScaffold(gameUnit: GameUnit?, modifier: Modifier) {
 @Composable
 fun UnitTextField(value: String,
                   label: String,
-                  icon: ImageVector,
                   contentDescription: String,
                   keyboardOptions: KeyboardOptions,
                   modifier: Modifier) {
-    val context = LocalContext.current
     var textValue by remember { mutableStateOf(value) }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier) {
-
+    Row(modifier = modifier,
+        horizontalArrangement = Arrangement.Center) {
+        PlainTooltipBox(tooltip = { Text(contentDescription) }) {
             TextField(
                 value = textValue,
                 onValueChange = { textValue = it },
                 label = { Text(label) },
                 maxLines = 1,
-                keyboardOptions = keyboardOptions
+                keyboardOptions = keyboardOptions,
+                modifier = Modifier.tooltipAnchor()
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
             )
-            PlainTooltipBox(tooltip = { Text(contentDescription) }) {
-                IconButton(onClick = {},
-                        modifier = Modifier.tooltipAnchor()) {
-                            Icon(imageVector = icon,
-                            contentDescription = contentDescription,
-                            modifier = modifier
-                )
-            }
         }
     }
-}
-
-fun makeInfoToast(context: Context, message: String){
-    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
